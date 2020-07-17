@@ -6,4 +6,6 @@ mypath="/root/RandomNumber/random_Num"
 
 echo $RANDOM > $mypath
 
-
+git add /root/RandomNumber/.
+git commit -m "New random number"
+git push origin master
