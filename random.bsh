@@ -1,0 +1,9 @@
+#!/bin/bash
+# Developer : Hamdy Abou El Anein
+# The objective is to push to github a file who contain a random number automatically from a cron job in Linux.
+
+mypath="/root/RandomNumber/random_Num"
+
+echo $RANDOM > $mypath
+
+
