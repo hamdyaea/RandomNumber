@@ -11,3 +11,4 @@ cd /root/RandomNumber/
 git add .
 git commit -m "New random number"
 git push origin master
+rm -rf $mypath
