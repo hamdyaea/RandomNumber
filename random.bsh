@@ -11,6 +11,7 @@ echo "# RamdomNumber    " > $mypathRM
 echo "This is a testrepository where a random number is pushed to a file automatically passwordless from a cron job in Linux CentOS server    " >> $mypathRM
 echo "# Random Number of today    " >> $mypathRM
 cat $mypath >> $mypathRM
+echo "      " >> $mypathRM
 echo "Last update (GMT +1)    " >> $mypathRM
 echo $today >> $mypathRM
 echo "# Developer    " >> $mypathRM
