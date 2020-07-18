@@ -3,12 +3,25 @@
 # The objective is to push to github a file who contain a random number automatically from a cron job in Linux.
 
 mypath="/root/RandomNumber/random_Num"
+mypathRM="/root/RandomNumber/README.md"
+today=$(date +"%D %T")
 
 echo $RANDOM > $mypath
+echo "# RamdomNumber    " > $mypathRM
+echo "This is a testrepository where a random number is pushed to a file automatically passwordless from a cron job in Linux CentOS server    " >> $mypathRM
+echo "# Random Number of today    " >> $mypathRM
+cat $mypath >> $mypathRM
+echo "Last update (GMT +1)    "
+echo $today >> $mypathRM
+echo "# Developer    " >> $mypathRM
+echo "Hamdy Abou El Anein   " >> $mypathRM
 
 cd /root/RandomNumber/
 
 git add .
 git commit -m "New random number"
 git push origin master
+
 rm -rf $mypath
+rm -rf $mypathRM
+
