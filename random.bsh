@@ -16,7 +16,7 @@ echo "Last update (GMT +1)    " >> $mypathRM
 echo $today >> $mypathRM
 echo "# Developer    " >> $mypathRM
 echo "Hamdy Abou El Anein   " >> $mypathRM
-echo "hamdy.aea@protonmail.com" >> $mypthRM
+echo "hamdy.aea@protonmail.com" >> $mypathRM
 
 cd /root/RandomNumber/
 
