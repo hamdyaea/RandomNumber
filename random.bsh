@@ -9,7 +9,7 @@ today=$(date +"%D %T")
 echo $RANDOM > $mypath
 echo "# RandomNumber    " > $mypathRM
 echo "This is a test repository where a random number is pushed to a file automatically passwordless from a cron job in my Linux CentOS server    " >> $mypathRM
-echo "# Random Number of today    " >> $mypathRM
+echo "# Random Number of the last run   " >> $mypathRM
 cat $mypath >> $mypathRM
 echo "      " >> $mypathRM
 echo "Last update (GMT +1)    " >> $mypathRM
