@@ -1,29 +1,35 @@
 #!/bin/bash
 # Developer : Hamdy Abou El Anein
-# The objective is to push to github a file who contain a random number automatically from a cron job in Linux.
 
+# Define full path for commands
+GIT="/usr/bin/git"
+ECHO="/bin/echo"
+CAT="/bin/cat"
+RM="/bin/rm"
+
+# The objective is to push to GitHub a file containing a random number automatically from a cron job in Linux.
 mypath="/root/RandomNumber/random_Num"
 mypathRM="/root/RandomNumber/README.md"
-today=$(date +"%D %T")
+today=$($ECHO $(date +"%D %T"))
 
-echo $RANDOM > $mypath
-echo "# RandomNumber    " > $mypathRM
-echo "This is a test repository where a random number is pushed to a file automatically passwordless from a cron job in my Linux CentOS server    " >> $mypathRM
-echo "# Random Number of the last run   " >> $mypathRM
-cat $mypath >> $mypathRM
-echo "      " >> $mypathRM
-echo "Last update (GMT +1)    " >> $mypathRM
-echo $today >> $mypathRM
-echo "# Developer    " >> $mypathRM
-echo "Hamdy Abou El Anein   " >> $mypathRM
-echo "hamdy.aea@protonmail.com" >> $mypathRM
+$ECHO $RANDOM > $mypath
+$ECHO "# RandomNumber    " > $mypathRM
+$ECHO "This is a test repository where a random number is pushed to a file automatically passwordless from a cron job in my Linux CentOS server    " >> $mypathRM
+$ECHO "# Random Number of the last run   " >> $mypathRM
+$CAT $mypath >> $mypathRM
+$ECHO "      " >> $mypathRM
+$ECHO "Last update (GMT +1)    " >> $mypathRM
+$ECHO $today >> $mypathRM
+$ECHO "# Developer    " >> $mypathRM
+$ECHO "Hamdy Abou El Anein   " >> $mypathRM
+$ECHO "hamdy.aea@protonmail.com" >> $mypathRM
 
 cd /root/RandomNumber/
 
-git add .
-git commit -m "New random number"
-git push origin master
+$GIT add .
+$GIT commit -m "New random number"
+$GIT push origin master
 
-rm -rf $mypath
-rm -rf $mypathRM
+$RM -rf $mypath
+$RM -rf $mypathRM
 
