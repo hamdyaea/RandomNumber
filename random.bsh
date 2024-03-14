@@ -7,6 +7,16 @@ ECHO="/bin/echo"
 CAT="/bin/cat"
 RM="/bin/rm"
 
+# Generate a random number between 1 and 10
+random_number=$((1 + RANDOM % 10))
+echo "Random number is $random_number"
+
+# Check if the random number is greater than or equal to 4
+if [ $random_number -lt 4 ]; then
+    echo "Random number is less than 4, exiting."
+    exit 0
+fi
+
 # The objective is to push to GitHub a file containing a random number automatically from a cron job in Linux.
 mypath="/root/RandomNumber/random_Num"
 mypathRM="/root/RandomNumber/README.md"
