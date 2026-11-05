@@ -1,53 +1,77 @@
-#!/bin/bash
-# Developer : Hamdy Abou El Anein
+#!/usr/bin/env bash
+# Developer: Hamdy Abou El Anein
+# Contact: hamdy.aea@protonmail.com
+# Copyright (C) 2026 Hamdy Abou El Anein
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Generate a random number; optionally write and publish it to GitHub.
+# Safe default: print only, without changing files or calling Git.
+set -euo pipefail
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+output="$ROOT/random_Num"
+threshold=4
+write=false
+publish=false
+override=''
+custom_output=false
 
-# Define full path for commands
-GIT="/usr/bin/git"
-ECHO="/bin/echo"
-CAT="/bin/cat"
-RM="/bin/rm"
-
-# Generate a random number between 1 and 10
-random_number=$((1 + RANDOM % 10))
-echo "Random number is $random_number"
-
-# Check if the random number is greater than or equal to 4
-if [ $random_number -lt 4 ]; then
-    echo "Random number is less than 4, exiting."
+usage() {
+    printf 'Usage: %s [--write] [--publish] [--threshold 1..10] [--output FILE] [--number 1..10]\n' "${0##*/}"
+    printf 'Default: preview only. --publish implies --write and pushes to origin.\n'
+}
+while (( $# )); do
+    case "$1" in
+        --write) write=true; shift ;;
+        --publish) write=true; publish=true; shift ;;
+        --threshold|--output|--number)
+            (( $# >= 2 )) || { usage >&2; exit 2; }
+            case "$1" in
+                --threshold) threshold="$2" ;;
+                --output) output="$2"; custom_output=true ;;
+                --number) override="$2" ;;
+            esac
+            shift 2 ;;
+        --help|-h) usage; exit 0 ;;
+        *) usage >&2; exit 2 ;;
+    esac
+done
+valid_number() {
+    [[ "$1" =~ ^(10|[1-9])$ ]]
+}
+if ! valid_number "$threshold" ||
+   { [[ -n "$override" ]] && ! valid_number "$override"; }; then
+    printf 'Error: threshold/number must be 1–10.\n' >&2
+    exit 2
+fi
+if $publish && { $custom_output || [[ -n "$override" ]]; }; then
+    printf 'Error: publishing requires the default file and genuine randomness.\n' >&2
+    exit 2
+fi
+number="${override:-$(python3 -c 'import secrets; print(secrets.randbelow(10) + 1)')}"
+printf 'Random number: %s\n' "$number"
+if (( number < threshold )); then
+    printf 'Below threshold %d; no file or Git changes.\n' "$threshold"
     exit 0
 fi
-
-# The objective is to push to GitHub a file containing a random number automatically from a cron job in Linux.
-mypath="/root/RandomNumber/random_Num"
-mypathRM="/root/RandomNumber/README.md"
-today=$($ECHO $(date +"%D %T"))
-
-$ECHO $RANDOM > $mypath
-$ECHO "# RandomNumber    " > $mypathRM
-$ECHO "This is a test repository where a random number is pushed to a file automatically passwordless from a cron job in my Linux CentOS server    " >> $mypathRM
-$ECHO "# Random Number of the last run   " >> $mypathRM
-$CAT $mypath >> $mypathRM
-$ECHO "      " >> $mypathRM
-$ECHO "Last update (GMT +1)    " >> $mypathRM
-$ECHO $today >> $mypathRM
-$ECHO "# Developer    " >> $mypathRM
-$ECHO "Hamdy Abou El Anein   " >> $mypathRM
-$ECHO "hamdy.aea@protonmail.com" >> $mypathRM
-$ECHO "##  " >> $mypathRM
-$ECHO "##  " >> $mypathRM
-$ECHO "##  " >> $mypathRM
-$ECHO "##  " >> $mypathRM
-$ECHO "##  " >> $mypathRM
-$ECHO "## GitAds Sponsored   " >> $mypathRM
-$ECHO "[![Sponsored by GitAds](https://gitads.dev/v1/ad-serve?source=hamdyaea/gnu-coreutils-python@github)](https://gitads.dev/v1/ad-track?source=hamdyaea/gnu-coreutils-python@github)" >> $mypathRM
-$ECHO "<!-- GitAds-Verify: J7NMXBQSBAVVZVFPZO5UH8USUG1D1HCK -->" >> $mypathRM
-
-cd /root/RandomNumber/
-
-$GIT add .
-$GIT commit -m "New random number"
-$GIT push origin master
-
-$RM -rf $mypath
-$RM -rf $mypathRM
-
+if ! $write; then
+    printf 'Preview only; pass --write or --publish to save.\n'
+    exit 0
+fi
+if [[ -L "$output" || ( -e "$output" && "$output" != "$ROOT/random_Num" ) ]]; then
+    printf 'Error: refusing to overwrite an existing or symlinked custom file.\n' >&2
+    exit 2
+fi
+mkdir -p -- "$(dirname -- "$output")"
+printf '%s\n' "$number" > "$output"
+printf 'Saved to %s\n' "$output"
+if ! $publish; then
+    exit 0
+fi
+if ! git -C "$ROOT" diff --quiet -- random_Num; then
+    git -C "$ROOT" add -- random_Num
+    git -C "$ROOT" commit -m "Update random number"
+    branch="$(git -C "$ROOT" branch --show-current)"
+    [[ -n "$branch" ]] || { printf 'Error: detached HEAD.\n' >&2; exit 2; }
+    git -C "$ROOT" push origin "$branch"
+else
+    printf 'No Git changes; nothing to publish.\n'
+fi

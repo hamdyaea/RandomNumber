@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd -- "$(dirname -- "$0")"
+git pull --ff-only origin master
+# Retry a previous local commit even if today's draw skips publication.
+git push origin HEAD:master
+if (( 1 + RANDOM % 10 < 4 )); then exit 0; fi
+number=$RANDOM
+printf '%s\n' "$number" > random_Num
+python3 - "$number" <<'PY'
+from datetime import datetime
+from pathlib import Path
+import sys
+readme = Path("README.md")
+marker = "\n<!-- latest-cron-draw -->\n"
+intro = readme.read_text().partition(marker)[0].rstrip()
+stamp = datetime.now().astimezone().isoformat(timespec="seconds")
+readme.write_text(f"{intro}\n{marker}\n## Latest Raspberry Pi draw\n\n{sys.argv[1]} · {stamp}\n")
+PY
+git commit --only -m 'New random number' -- random_Num README.md
+git push origin HEAD:master
