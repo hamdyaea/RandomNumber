@@ -40,3 +40,9 @@ All tests use temporary files. No Git push or cron configuration is
 performed during testing.
 
 The original implementation is preserved in branch `old`.
+
+<!-- latest-cron-draw -->
+
+## Latest Raspberry Pi draw
+
+6602 · 2026-11-05T11:40:24+01:00
