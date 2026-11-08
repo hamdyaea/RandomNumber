@@ -45,4 +45,4 @@ The original implementation is preserved in branch `old`.
 
 ## Latest Raspberry Pi draw
 
-19591 · 2026-11-08T00:00:05+01:00
+16708 · 2026-11-08T02:00:04+01:00
